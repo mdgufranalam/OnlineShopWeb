@@ -1,0 +1,64 @@
+﻿@using System.Globalization
+@model IEnumerable<OnlineShop.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<p class="mt-1">
+    <a asp-action="Create" class="btn btn-success">Create New</a>
+</p>
+<br />
+<table class="table" id="categorytbl">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                    @{
+                        CultureInfo ci = CultureInfo.InvariantCulture;
+                        string CreatedDate = item.CreatedDateTime.ToString("dd-MMM-yyyy hh:mm tt", ci);
+                    }
+                @Html.DisplayFor(modelItem => CreatedDate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id}) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.Id })                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script>
+//   $(document).ready( function () {
+//    $('#categorytbl').DataTable();
+//} );
+</script>
