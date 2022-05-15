@@ -36,7 +36,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Admin}/{controller=Category}/{action=Index}/{id?}");
+    pattern: "{area=Customer}/{controller=Product}/{action=Index}/{id?}");
 
 //app.UseEndpoints(endpoints =>
 //{

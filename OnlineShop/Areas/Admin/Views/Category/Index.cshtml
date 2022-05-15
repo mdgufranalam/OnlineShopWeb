@@ -5,11 +5,23 @@
     ViewData["Title"] = "Index";
 }
 
-
-<p class="mt-1">
+<div class="container ">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Category List</h2>
+		</div>
+       <div class="col-6 text-end">
+            <a asp-controller="Category" asp-action="Create" class="btn btn-success">
+               <i class="bi bi-plus-circle"></i> &nbsp; Create New Category
+			</a>
+		</div>
+	</div>
+    <hr />
+    
+@*<p class="mt-1">
     <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
-<br />
+<br />*@
 <table class="table" id="categorytbl">
     <thead>
         <tr>
@@ -56,7 +68,7 @@
 }
     </tbody>
 </table>
-
+</div>
 <script>
 //   $(document).ready( function () {
 //    $('#categorytbl').DataTable();

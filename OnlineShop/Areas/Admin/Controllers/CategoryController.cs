@@ -24,17 +24,12 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult=await httpClientHelper.GetAsync("Category");
-                
-                if(string.IsNullOrEmpty(apiresult))
-                {
-                   // return NotFound();
-                }
-                IEnumerable<Category> categories = JsonConvert.DeserializeObject<IEnumerable<Category>>(apiresult);
+                IEnumerable<Category> categories = JsonConvert.DeserializeObject<IEnumerable<Category>>(apiresult.Data);
                 return View(categories);
             }
             catch (Exception)
             {
-
+                //ToDO return content of Json
                 throw;
             }
            
@@ -46,12 +41,15 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult = await httpClientHelper.GetAsync("Category/"+id.ToString());
-                if(apiresult != "Category Not Found.")
+                if(apiresult.Success)
                 {
-                    Category item = JsonConvert.DeserializeObject<Category>(apiresult);
+                    Category item = JsonConvert.DeserializeObject<Category>(apiresult.Data);
                     return View(item);
                 }
-                return NotFound();
+                else
+                {
+                    return Json(apiresult);
+                }               
 
             }
             catch (Exception Ex)
@@ -78,11 +76,15 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var rs=await httpClientHelper.PostAsync("Category", JsonConvert.SerializeObject(item));
-                if(rs !="")
+                if(rs.Success)
                 {
-                    return BadRequest(rs);
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    return Json(rs);
+                }
+               
             }
             catch
             {
@@ -97,12 +99,16 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult = await httpClientHelper.GetAsync("Category/" + id.ToString());
-                if (apiresult != "Category Not Found.")
+                if (apiresult.Success)
                 {
-                    Category item = JsonConvert.DeserializeObject<Category>(apiresult);
+                    Category item = JsonConvert.DeserializeObject<Category>(apiresult.Data);
                     return View(item);
                 }
-                return NotFound();
+                else
+                {
+                    return Json(apiresult);
+                }
+                
 
             }
             catch (Exception Ex)
@@ -119,7 +125,7 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult = await httpClientHelper.PutAsync("Category/" + id.ToString(),JsonConvert.SerializeObject(Item));
-                if (apiresult != "Category Not Found.")
+                if (apiresult.Success)
                 {
                     return RedirectToAction(nameof(Index));
                 }
@@ -138,12 +144,12 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult = await httpClientHelper.GetAsync("Category/" + id.ToString());
-                if (apiresult != "Category Not Found.")
+                if (apiresult.Success)
                 {
-                    Category item = JsonConvert.DeserializeObject<Category>(apiresult);
+                    Category item = JsonConvert.DeserializeObject<Category>(apiresult.Data);
                     return View(item);
                 }
-                return NotFound();
+                return Json(apiresult);
             }
             catch (Exception ex)
             {
@@ -160,11 +166,14 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult = await httpClientHelper.DeleteAsync("Category/" + id.ToString());
-                if (apiresult != "Category Not Found." && apiresult == id.ToString())
+                if (apiresult.Success)
                 {
                     return RedirectToAction(nameof(Index));
                 }
-                return NotFound();
+                else
+                {
+                    return Json(apiresult);
+                }
             }
             catch (Exception ex)
             {

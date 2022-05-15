@@ -1,0 +1,81 @@
+﻿@using OnlineShop.Models
+@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="container">
+    <div class="row">
+
+            @foreach(var item in Model)
+        {
+     <div class="col-md-3 col-sm-3 m-1">
+        <div class="card" style="width: 18rem; float:left;">
+        <img class="card-img-top" src="@item.ImageUrl" alt="Product Image">      
+       <div class="card-body">
+      <div class="row">
+        <div class="card-title">
+          <h5>@item.Title</h5>
+          <h7 class="text-black"><del>Rs : @item.ListPrice</del> &nbsp; Rs:@item.Price</h7>
+        </div>
+        <div class="view-btn">
+          
+           <a href="@Url.Action("Details","Product",new { id = @item.Id })">Show details</a>
+        </div>
+      </div>
+      <hr />     
+      <div class="btn-group">
+       <a href="@Url.Action("Index","Product",new { id = @item.Id })" class="btn btn-primary">Buy</a>
+        <a href="@Url.Action("Index","Product",new { id = @item.Id })" class="btn btn-warning"><i class="bi bi-cart"></i>Add to cart</a>
+      </div>
+    </div>
+       </div>
+     </div>
+    @* <div class="col-md-4">
+		<figure class="card card-product-grid card-lg">
+			<a href="#" class="img-wrap" data-abc="true"><img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571750967/Ecommerce/ef192a21ec96.jpg"></a>
+			<figcaption class="info-wrap">
+   					<div class="row">
+
+   						<div class="col-md-8">
+
+   							<a href="#" class="title" data-abc="true">ASUS Laptop - 5GB RAM</a>
+   							
+   						</div>
+
+   						<div class="col-md-4">
+
+   							<div class="rating text-right">
+   								<i class="fa fa-star"></i>
+   								<i class="fa fa-star"></i>
+   								<i class="fa fa-star"></i>
+   								
+   							</div>
+
+   							
+   							
+   						</div>
+   						
+   					</div>
+
+					
+					
+			</figcaption>
+			<div class="bottom-wrap">
+				<a href="#" class="btn  btn-primary float-right" data-abc="true"> Buy now </a>
+				<div class="price-wrap">
+					<span class="price h5">$999</span> <br> <small class="text-success">Free shipping</small>
+				</div>
+			</div> 
+		</figure>
+	</div>*@
+
+        }
+            
+   </div>
+</div>
+<div style="float:none;">
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
