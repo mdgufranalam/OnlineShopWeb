@@ -4,8 +4,15 @@
     ViewData["Title"] = "Create";
 }
 
-<h2 class="mt-1"> Create Product</h2>
-<hr />
+<div class="row pt-4">
+        <div class="col-6">
+            <h2>Create Product</h2>
+		</div>
+       <div class="col-6 text-end">            
+             <a asp-action="Index" class="btn btn-dark">Back to List</a>
+		</div>
+	</div>
+    <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
@@ -22,7 +29,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+               @* <input asp-for="Description" class="form-control" />*@
+               <textarea class="form-control" id="Description" rows="3" asp-for="Description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,7 +51,7 @@
             <div class="form-group">
                 <label asp-for="ImageUrl" class="control-label"></label>
                 @*<input asp-for="ImageUrl" class="form-control" />*@
-                <input asp-for="ImageUrl" class="form-control" type="file" name="file">
+                <input asp-for="ImageUrl" class="form-control" type="file" name="file" id="imagefile">
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
            @* <div class="form-group">
@@ -63,16 +71,28 @@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" onclick="return ValidateInput()" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    
+	function ValidateInput(){
+		if(document.getElementById("imagefile").value==""){
+			Swal.fire({
+			  icon: 'error',
+			  title: 'Oops...',
+			  text: 'Please upload an Image!',
+			});
+			return false;
+		}
+		return true;
+	}
+</script>

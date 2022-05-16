@@ -22,6 +22,8 @@ namespace OnlineShop.Areas.Admin.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Result"))
+                   ViewData["Result"] = TempData["Result"];
                 var apiresult = await httpClientHelper.GetAsync("Product");
                 var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
                 return View(products);
@@ -50,8 +52,9 @@ namespace OnlineShop.Areas.Admin.Controllers
                         //categorySelectList.Insert(0, new { Id = 0, Name = "--Select Category--" });
                     ViewBag.Categories = categorySelectList;
                 }
-                    return View(products);
+                return View(products);
                 }
+                ViewData["Result"] = JsonConvert.SerializeObject(apiresult);
                 return NotFound();
             }
             catch (Exception ex)
@@ -93,15 +96,15 @@ namespace OnlineShop.Areas.Admin.Controllers
                         product.ImageUrl= "imageurl";
                         var result = await httpClientHelper.PostAsync("Product", JsonConvert.SerializeObject(product));
                         
-                        ViewBag.Result = result;
+                        ViewData["Result"] = JsonConvert.SerializeObject(result); ;
                        
                     }
                     else
                     {
-                        ViewBag.Result = uploadResult;
+                        ViewData["Result"] = JsonConvert.SerializeObject(uploadResult); ;
                     }
 
-                    ViewBag.Result = uploadResult;
+                    ViewData["Result"] = uploadResult;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -148,7 +151,7 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult=await httpClientHelper.PutAsync("Product/" + id, JsonConvert.SerializeObject(product));
-                ViewBag.Result = apiresult;
+                TempData["Result"] = JsonConvert.SerializeObject(apiresult); ;
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -187,7 +190,7 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 var apiresult = await httpClientHelper.DeleteAsync("Product/" + id);
-                ViewBag.Result = apiresult;
+                TempData["Result"] = JsonConvert.SerializeObject(apiresult); ;
                 return RedirectToAction(nameof(Index));
             }
             catch

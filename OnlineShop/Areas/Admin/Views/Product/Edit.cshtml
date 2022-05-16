@@ -1,13 +1,19 @@
-﻿@model OnlineShop.Models.Product
+﻿@using System.Globalization
+@model OnlineShop.Models.Product
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Product</h4>
-<hr />
+<div class="row pt-4">
+        <div class="col-6">
+            <h2>Edit Product</h2>
+		</div>
+       <div class="col-6 text-end">            
+             <a asp-action="Index" class="btn btn-dark">Back to List</a>
+		</div>
+	</div>
+    <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
@@ -42,22 +48,31 @@
                 <label asp-for="ImageUrl" class="control-label"></label>
                 <input asp-for="ImageUrl" class="form-control" />
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>           
+            </div>  
+           
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
                 <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories,"Id","Name"))"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
+
+            </div>
+             @{
+                        CultureInfo ci = CultureInfo.InvariantCulture;
+                        string LastUpdate = Model.LastUpdateDate.ToString("dd-MMM-yyyy hh:mm tt", ci);
+                    }
+             <div class="form-group">
+                <label asp-for="LastUpdateDate" class="control-label"></label>
+                <input asp-for="@LastUpdate" class="form-control"  disabled />               
+
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label></label>
+                <input type="submit" value="Update" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

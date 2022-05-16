@@ -19,7 +19,24 @@ namespace OnlineShop.Areas.Customer.Controllers
         {
             try
             {
+                if (TempData.ContainsKey("Result"))
+                    ViewData["Result"] = TempData["Result"];
                 var apiresult = await httpClientHelper.GetAsync("Product");
+                var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
+                return View(products);
+            }
+            catch (Exception Ex)
+            {
+                return Json(Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string searchstring)
+        {
+            try
+            {
+                var apiresult = await httpClientHelper.GetAsync("Product/SearchProducts/"+searchstring);
                 var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
                 return View(products);
             }
@@ -56,5 +73,27 @@ namespace OnlineShop.Areas.Customer.Controllers
             }
 
         }
+
+        [HttpGet("[action]/{category}")]
+        public async Task<IActionResult> CategoryWiseProduct(string category)
+        {
+            try
+            {
+                IEnumerable<Product> products;
+                var apiresult = await httpClientHelper.GetAsync("Product/SearchProducts/" + category);
+                if (apiresult.Success)
+                {
+                    products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
+                    return View("Index", products);
+                }
+                products=new List<Product>();
+                return View("Index", products);
+            }
+            catch (Exception Ex)
+            {
+                return Json(Ex.Message);
+            }
+        }
+        // GET: ProductController/Details/5
     }
 }

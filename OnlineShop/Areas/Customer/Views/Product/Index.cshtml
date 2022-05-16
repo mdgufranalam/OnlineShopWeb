@@ -6,7 +6,9 @@
 }
 <div class="container">
     <div class="row pb-3">
-	@foreach(var product in Model)
+		@if(Model.Count()!=0)
+		{
+			@foreach(var product in Model)
 	{
 		<div class="col-lg-3 col-md-6">
 			<div class="row p-2">
@@ -16,15 +18,17 @@
 
 						<div class="card-body">
 						<div class="pl-1">
-							<p class="card-title h5 text-primary">@product.Title</p>
-							<p class="card-title text-info">Category <b>@product.Category.Name</b></p>
+							<p class="card-title h6 text-primary">@product.Title</p>
+							<p class="card-title text-info">Category | @product.Category.Name</p>
 						</div>
 						<div class="pl-1">
-							<p>List Price: <strike><b>Rs @product.ListPrice</b></strike></p>
+							@*<p>List Price: <strike><b>Rs @product.ListPrice</b></strike></p>*@
+							@{int disPer=(int) (100 * ((product.ListPrice) - product.Price)/product.ListPrice);}
+						<h6>Price : &#x20B9;@product.Price &nbsp;<small style="font-size: 10px"><del style="color:red;">&#x20B9;@product.ListPrice</del></small><span style="font-size: 15px">&nbsp;-@disPer%</span></h6>
 						</div>
-						<div class="pl-1">
-							<p>Offer Price: <b>$@product.Price</b></p>
-						</div>
+						@*<div class="pl-1">
+							<p>Offer Price: <b>Rs @product.Price</b></p>
+						</div>*@
 						</div>
 					</div>
 					<div>
@@ -35,6 +39,12 @@
 				</div> 
 			</div>
 		</div>
-	}
+			}
+		}
+		else
+		{
+			<img src="/contents/images/no-records.png" class="img-fluid" alt="No Record Found">
+		}
+
 </div>
 </div>

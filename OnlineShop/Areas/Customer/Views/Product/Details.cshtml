@@ -4,48 +4,60 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
+ <div class="row pt-4">
+        <div class="col-6">
+            <h2>@Model.Title</h2> <button class="btn btn-warning">@Model.Category.Name</button>
+		</div>
+       <div class="col-6 text-end">           
+             <a asp-action="Index" class="btn btn-dark">Go to Home</a>
+		</div>
+	</div>
 <div>
-    <h4>Product</h4>
-    <hr />
+       <hr />   
     <dl class="row">
-        <dt class = "col-sm-2">
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Id)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Id ,new { @class = "disabled"})
-        </dd>
-        <dt class = "col-sm-2">
+        </dd>*@
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Title)
-        </dd>
+        </dd>*@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+       @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ListPrice)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ListPrice)
-        </dd>
+        </dd>*@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            @*@Html.DisplayFor(model => model.Price)*@
+            
+						@{int disPer=(int) (100 * ((Model.ListPrice) - Model.Price)/Model.ListPrice);}
+						&#x20B9;@Model.Price &nbsp;<small style="font-size: 10px"><del style="color:red;">&#x20B9;@Model.ListPrice</del></small><span style="font-size: 15px">&nbsp;-@disPer%</span>
+						
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ImageUrl)
         </dt>
         <dd class = "col-sm-10">
             @*@Html.DisplayFor(model => model.ImageUrl)*@
-            <img src="@Model.ImageUrl" class="rounded float-right" alt="...">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img src="@Model.ImageUrl" class="img-thumbnail" alt="...">
+            </div>
         </dd>
        @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDateTime)
@@ -59,15 +71,16 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastUpdateDate)
         </dd>*@
-        <dt class = "col-sm-2">
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CategoryId)
         </dt>
         <dd class = "col-sm-6">
-         <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories,"Id","Name"))"></select>
+         <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+              @Html.DisplayFor(model => model.Category.Name)
+            </div>
          <span asp-validation-for="CategoryId" class="text-danger"></span>
+         </dd>*@
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+

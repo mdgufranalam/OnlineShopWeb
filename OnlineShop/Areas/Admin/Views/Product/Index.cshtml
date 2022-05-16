@@ -1,14 +1,23 @@
-﻿@model IEnumerable<OnlineShop.Models.Product>
+﻿@using System.Globalization
+@model IEnumerable<OnlineShop.Models.Product>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="container ">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Product List</h2>
+		</div>
+       <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-success">
+               <i class="bi bi-plus-circle"></i> &nbsp; Create New Product
+			</a>
+		</div>
+	</div>
+    <hr />
+    
 <table class="table">
     <thead>
         <tr>
@@ -67,7 +76,11 @@
                 @Html.DisplayFor(modelItem => item.CreatedDateTime)
             </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.LastUpdateDate)
+                @{
+                        CultureInfo ci = CultureInfo.InvariantCulture;
+                        string LastUpdate = item.LastUpdateDate.ToString("dd-MMM-yyyy hh:mm tt", ci);
+                    }
+                @Html.DisplayFor(modelItem => LastUpdate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)
@@ -81,3 +94,4 @@
 }
     </tbody>
 </table>
+</div>

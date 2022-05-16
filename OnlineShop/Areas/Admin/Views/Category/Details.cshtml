@@ -5,11 +5,20 @@
     ViewData["Title"] = "Details";
 }
 
-<h1 class="mt-1">Details</h1>
-
-<div>
-    <h4>Category</h4>
+<div class="row pt-4">
+        <div class="col-6">
+            <h2>Product Details</h2>
+		</div>
+       <div class="col-6 text-end">
+            <a asp-controller="Category" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">
+               <i class="bi bi-pencil-square"></i>&nbsp; Edit
+			</a>
+             <a asp-action="Index" class="btn btn-dark">Back to List</a>
+		</div>
+	</div>
     <hr />
+<div>
+    
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Id)
@@ -41,8 +50,5 @@
         </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = @Model.Id  }) |
-   <a asp-action="Index" class="btn btn-dark">Back to List</a>
-</div>
+
 

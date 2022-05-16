@@ -26,7 +26,7 @@ namespace OnlineShop.Models
         public double ListPrice { get; set; }
         [Required(ErrorMessage = "Price for 1-50 cannot be blank.")]
         [Range(1, 100000)]
-        [Display(Name = "Offer Price")]
+        [Display(Name = "Price")]
         public double Price { get; set; }
 
         //[Required(ErrorMessage = "Price for 51+ cannot be blank.")]
@@ -38,8 +38,10 @@ namespace OnlineShop.Models
         [Display(Name = "Image URL")]
         public string ImageUrl { get; set; }
         [JsonIgnore]
+        [Display(Name = "Created Date")]
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
         [JsonIgnore]
+        [Display(Name = "Last Update Date")]
         public DateTime LastUpdateDate { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Category cannot be blank.")]

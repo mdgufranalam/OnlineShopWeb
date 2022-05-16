@@ -3,4 +3,12 @@
 
 // Write your JavaScript code.
 
-$("input").prop("autocomplete","off");
+$("input").prop("autocomplete", "off");
+
+//tinymce.init({
+//    selector: 'textarea',
+//    plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+//    toolbar_mode: 'floating',
+//});
+
+
