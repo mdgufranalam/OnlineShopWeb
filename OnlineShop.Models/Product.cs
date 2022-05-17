@@ -36,7 +36,7 @@ namespace OnlineShop.Models
 
         [ValidateNever]
         [Display(Name = "Image URL")]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         [JsonIgnore]
         [Display(Name = "Created Date")]
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
@@ -50,6 +50,15 @@ namespace OnlineShop.Models
         [ForeignKey("CategoryId")]
         [ValidateNever]
         public Category Category { get; set; }
+
+        [NotMapped]
+        [ValidateNever]
+        public int DiscountPerc
+        {
+            get { return (int)(100 * ((ListPrice) - Price) / ListPrice); }
+            set { }
+
+        }
 
 
     }

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using OnlineShop.Utility
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -49,16 +50,24 @@
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="@Url.Action("Index","Product")">Product</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="@Url.Action("Index","Category")">Category</a>
-        </li>
+             @if (User.IsInRole(SD.Role_Admin))
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Managment</a>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>									
+									<a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+									@*<div class="dropdown-divider"></div>
+									<a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>*@
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Create User</a>
+								</div>
+							</li>
+						}
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
         </li>
-        @await Component.InvokeAsync("CategoryMenu")
+    @*    @await Component.InvokeAsync("CategoryMenu")*@
         @*<li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
           <div class="dropdown-menu">
@@ -73,12 +82,10 @@
       <form class="d-flex p-1" method="post">
         <input class="form-control me-sm-2" type="text" placeholder="Search" name="searchstring">
         <button class="btn btn-secondary my-2 my-sm-0" type="submit" asp-action="Index" asp-controller="Product" >Search</button>
-        
-        <a class="btn btn-dark m-1" href="#" >Login</a>
-         <a class="btn btn-info m-1" href="#">Register</a>
       </form>
+        
+      <partial name="_LoginPartial" />
       
-      @*<partial name="_LoginPartial" />*@
     </div>
   </div>
 </nav>
@@ -118,7 +125,9 @@ import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm"
    
     //Boolean isResult=isResult;
     var item='@ViewData["Result"]';
-   var result=jQuery.parseJSON(item.replace(/&quot;/g, '"'));
+    if(item!='')
+    {
+    var result=jQuery.parseJSON(item.replace(/&quot;/g, '"'));
     if(result.Message!='' || result.Data!='')
     {
       
@@ -132,5 +141,7 @@ import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm"
               toastr.error(result.Message);
          }
     }
+    }
+   
    
 </script>

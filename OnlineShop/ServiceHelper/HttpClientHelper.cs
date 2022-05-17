@@ -48,7 +48,7 @@ namespace OnlineShop.ServiceHelper
             }
             catch (HttpRequestException ex)
             {
-                serviceResult.Message = "Error occured while connecting to API";
+                serviceResult.Message = "Backend server is down, please connect with admin.";
                 serviceResult.Success = false;
                
             }
@@ -202,7 +202,7 @@ namespace OnlineShop.ServiceHelper
                
                 if (file != null && file.Length > 0)
                 {
-                    using (var client = httpClientFactory.CreateClient("ShopApi"))
+                    using (var client = httpClientFactory.CreateClient())
                     {
                         try
                         {
@@ -219,12 +219,13 @@ namespace OnlineShop.ServiceHelper
                             MultipartFormDataContent multiContent = new MultipartFormDataContent();
                            
                             
-                            multiContent.Add(bytes, "file", file.FileName);                           
+                            multiContent.Add(bytes, "image", file.FileName);
                             //multiContent.Add(datacontent, "product");
-
-                            var result = await client.PostAsync(actionUrl, multiContent);
+                            client.DefaultRequestHeaders.Add("Authorization", "Client-ID a8a3c29e0816def");
+                            var result = await client.PostAsync("https://api.imgur.com/3/image/",multiContent);
                             if (result.IsSuccessStatusCode)
                             {
+                                
                                 serviceResult.Data = await result.Content.ReadAsStringAsync();
                             }
                             else if ((int)result.StatusCode == StatusCodes.Status404NotFound)

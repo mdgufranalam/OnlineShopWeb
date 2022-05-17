@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OnlineShop.Models;
 using OnlineShop.ServiceHelper.Interface;
 
@@ -11,7 +12,7 @@ namespace OnlineShop.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IHttpClientHelper httpClientHelper;
-
+        ServiceResult<string> exception = new ServiceResult<string>();
         public ProductController(IHttpClientHelper httpClientHelper)
         {
             this.httpClientHelper = httpClientHelper;
@@ -28,11 +29,15 @@ namespace OnlineShop.Areas.Admin.Controllers
                 var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
                 return View(products);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return Json(Ex.Message);
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
             }
-            
+
         }
 
         // GET: ProductController/Details/5
@@ -44,14 +49,14 @@ namespace OnlineShop.Areas.Admin.Controllers
                 var products = JsonConvert.DeserializeObject<Product>(apiresult.Data);
                 if(products!=null)
                 {                
-                IEnumerable<Category> categories = null;
-                var categoriesApiResult = await httpClientHelper.GetAsync("Category");
-                if (categoriesApiResult.Success)
-                {
-                    var categorySelectList = JsonConvert.DeserializeObject<List<Category>>(categoriesApiResult.Data).Select(c => new { c.Id, c.Name }).Distinct().OrderBy(c => c.Name).ToList();
-                        //categorySelectList.Insert(0, new { Id = 0, Name = "--Select Category--" });
-                    ViewBag.Categories = categorySelectList;
-                }
+                //IEnumerable<Category> categories = null;
+                //var categoriesApiResult = await httpClientHelper.GetAsync("Category");
+                //if (categoriesApiResult.Success)
+                //{
+                //    var categorySelectList = JsonConvert.DeserializeObject<List<Category>>(categoriesApiResult.Data).Select(c => new { c.Id, c.Name }).Distinct().OrderBy(c => c.Name).ToList();
+                //        //categorySelectList.Insert(0, new { Id = 0, Name = "--Select Category--" });
+                //    ViewBag.Categories = categorySelectList;
+                //}
                 return View(products);
                 }
                 ViewData["Result"] = JsonConvert.SerializeObject(apiresult);
@@ -90,14 +95,12 @@ namespace OnlineShop.Areas.Admin.Controllers
                 if(ModelState.IsValid && file!=null)
                 {
                     var uploadResult=await httpClientHelper.PostMultipartAsync("Product/UploadFile", JsonConvert.SerializeObject(product), file);
-                    uploadResult.Success = true;
                     if(uploadResult.Success)
-                    {
-                        product.ImageUrl= "imageurl";
+                    {                       
+                        ImgurUpload resultdata = JsonConvert.DeserializeObject<ImgurUpload>(uploadResult.Data);
+                        product.ImageUrl= resultdata.data.link;
                         var result = await httpClientHelper.PostAsync("Product", JsonConvert.SerializeObject(product));
-                        
                         ViewData["Result"] = JsonConvert.SerializeObject(result); ;
-                       
                     }
                     else
                     {
@@ -108,9 +111,13 @@ namespace OnlineShop.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Json(ex.Message);
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -150,35 +157,71 @@ namespace OnlineShop.Areas.Admin.Controllers
         {
             try
             {
+                if (file == null && Request.Form.Files.Count!=0)
+                    file= Request.Form.Files[0];
+                if (file != null || Request.Form.Files.Count !=0)
+                {
+                   
+                    var uploadResult = await httpClientHelper.PostMultipartAsync("Product/UploadFile", JsonConvert.SerializeObject(product), file);
+                    if(uploadResult.Success)
+                    {
+                        ImgurUpload resultdata = JsonConvert.DeserializeObject<ImgurUpload>(uploadResult.Data);
+                        product.ImageUrl = resultdata.data.link;
+                       
+                    }
+                    else
+                    {
+                        TempData["Result"] = JsonConvert.SerializeObject(uploadResult);
+                        return RedirectToAction(nameof(Index));
+                    }
+                   
+                }
                 var apiresult=await httpClientHelper.PutAsync("Product/" + id, JsonConvert.SerializeObject(product));
-                TempData["Result"] = JsonConvert.SerializeObject(apiresult); ;
+                TempData["Result"] = JsonConvert.SerializeObject(apiresult); 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
+                
             }
         }
 
         // GET: ProductController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            
-            var apiresult = await httpClientHelper.GetAsync("Product/" + id);
-            var products = JsonConvert.DeserializeObject<Product>(apiresult.Data);
-            if (products != null)
+            try
             {
-                IEnumerable<Category> categories = null;
-                var categoriesApiResult = await httpClientHelper.GetAsync("Category");
-                if (categoriesApiResult.Success)
+                var apiresult = await httpClientHelper.GetAsync("Product/" + id);
+                var products = JsonConvert.DeserializeObject<Product>(apiresult.Data);
+                if (products != null)
                 {
-                    var categorySelectList = JsonConvert.DeserializeObject<List<Category>>(categoriesApiResult.Data).Select(c => new { c.Id, c.Name }).Distinct().OrderBy(c => c.Name).ToList();
-                    categorySelectList.Insert(0, new { Id = 0, Name = "--Select Category--" });
-                    ViewBag.Categories = categorySelectList;
+                    IEnumerable<Category> categories = null;
+                    var categoriesApiResult = await httpClientHelper.GetAsync("Category");
+                    if (categoriesApiResult.Success)
+                    {
+                        var categorySelectList = JsonConvert.DeserializeObject<List<Category>>(categoriesApiResult.Data).Select(c => new { c.Id, c.Name }).Distinct().OrderBy(c => c.Name).ToList();
+                        categorySelectList.Insert(0, new { Id = 0, Name = "--Select Category--" });
+                        ViewBag.Categories = categorySelectList;
+                    }
+                    return View(products);
                 }
-                return View(products);
+                return NotFound();
             }
-            return NotFound();
+            catch (Exception ex)
+            {
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
+            }
+            
+            
 
         }
 
@@ -193,9 +236,13 @@ namespace OnlineShop.Areas.Admin.Controllers
                 TempData["Result"] = JsonConvert.SerializeObject(apiresult); ;
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
             }
         }
     }

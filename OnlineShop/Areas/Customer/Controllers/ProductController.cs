@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using OnlineShop.Models;
 using OnlineShop.ServiceHelper.Interface;
@@ -9,6 +10,7 @@ namespace OnlineShop.Areas.Customer.Controllers
     public class ProductController : Controller
     {
         private readonly IHttpClientHelper httpClientHelper;
+        private ServiceResult<string> exception;
 
         public ProductController(IHttpClientHelper httpClientHelper)
         {
@@ -22,12 +24,24 @@ namespace OnlineShop.Areas.Customer.Controllers
                 if (TempData.ContainsKey("Result"))
                     ViewData["Result"] = TempData["Result"];
                 var apiresult = await httpClientHelper.GetAsync("Product");
-                var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
-                return View(products);
+                if (apiresult.Success)
+                {
+                    var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
+                    return View(products);
+                }
+                else
+                {
+                    ViewBag.Result = JsonConvert.SerializeObject(apiresult);
+                    return Json(apiresult);
+                }
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return Json(Ex.Message);
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return Json(exception);
             }
         }
 
@@ -36,13 +50,17 @@ namespace OnlineShop.Areas.Customer.Controllers
         {
             try
             {
-                var apiresult = await httpClientHelper.GetAsync("Product/SearchProducts/"+searchstring);
+                var apiresult = await httpClientHelper.GetAsync("Product/SearchProducts/" + searchstring);
                 var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
                 return View(products);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return Json(Ex.Message);
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
             }
         }
         // GET: ProductController/Details/5
@@ -68,9 +86,14 @@ namespace OnlineShop.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
-
-                return Json(ex.Message);
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
             }
+
+
 
         }
 
@@ -86,14 +109,51 @@ namespace OnlineShop.Areas.Customer.Controllers
                     products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
                     return View("Index", products);
                 }
-                products=new List<Product>();
+                products = new List<Product>();
                 return View("Index", products);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return Json(Ex.Message);
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
             }
         }
-        // GET: ProductController/Details/5
+        [HttpGet("[action]")]
+        public async Task<IActionResult> SortProduct(string? criteria, string? sort)
+        {
+            try
+            {
+                var sortcriteria = criteria ?? "lastupdatedate";
+                var sortwise = sort ?? "desc";
+                var query = new Dictionary<string, string>()
+                {
+                    ["criteria"] = sortcriteria,
+                    ["sort"] = sortwise
+                };
+                var querystringurl=QueryHelpers.AddQueryString("Product/SortProduct", query);
+                var apiresult = await httpClientHelper.GetAsync(querystringurl);
+                if (apiresult.Success)
+                {
+                    var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
+                    return View("Index", products);
+                }
+                else
+                {
+                    TempData["Result"] = JsonConvert.SerializeObject(apiresult);
+                }
+                return View("Index", new List<Product>());
+            }
+            catch (Exception ex)
+            {
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                TempData["Result"] = JsonConvert.SerializeObject(exception);
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
 }
