@@ -29,6 +29,9 @@
          Category  &nbsp&nbsp&nbsp
         </button>
              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                   
+              <li><a  class="dropdown-item" asp-controller="Product" asp-action="CategoryWiseProduct" asp-route-category="all">All</a></li>
+              
               @await Component.InvokeAsync("CategoryMenu")
              </ul>
              </div>

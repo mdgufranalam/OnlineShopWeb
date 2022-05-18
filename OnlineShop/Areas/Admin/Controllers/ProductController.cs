@@ -12,10 +12,23 @@ namespace OnlineShop.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IHttpClientHelper httpClientHelper;
+        private readonly Auth0 auth;
+        private readonly IAuth0ClientHelper auth0ClientHelper;
         ServiceResult<string> exception = new ServiceResult<string>();
-        public ProductController(IHttpClientHelper httpClientHelper)
+        public ProductController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper)
         {
             this.httpClientHelper = httpClientHelper;
+            this.auth = auth;          
+            this.auth0ClientHelper = auth0ClientHelper;
+            if (auth.expires_out < auth.current_time)
+            {
+                var authres = auth0ClientHelper.GetTokenAsync(this.auth).GetAwaiter().GetResult();
+                if (authres.Success)
+                {
+                    this.auth = authres.Data;
+                }
+            }
+            httpClientHelper.auth = auth;
         }
 
         // GET: ProductController
@@ -100,14 +113,13 @@ namespace OnlineShop.Areas.Admin.Controllers
                         ImgurUpload resultdata = JsonConvert.DeserializeObject<ImgurUpload>(uploadResult.Data);
                         product.ImageUrl= resultdata.data.link;
                         var result = await httpClientHelper.PostAsync("Product", JsonConvert.SerializeObject(product));
-                        ViewData["Result"] = JsonConvert.SerializeObject(result); ;
+                        TempData["Result"] = JsonConvert.SerializeObject(result); ;
                     }
                     else
                     {
-                        ViewData["Result"] = JsonConvert.SerializeObject(uploadResult); ;
+                        TempData["Result"] = JsonConvert.SerializeObject(uploadResult); ;
                     }
-
-                    ViewData["Result"] = uploadResult;
+                   
                 }
                 return RedirectToAction(nameof(Index));
             }

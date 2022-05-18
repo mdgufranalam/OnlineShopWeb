@@ -1,0 +1,63 @@
+﻿@model OnlineShop.Models.ShoppingCart
+@{
+    ViewData["Title"] = "Details";
+}
+
+ <div class="row pt-4">
+        <div class="col-6">
+            <h2>@Model.Product.Title</h2> <button class="btn btn-warning">@Model.Product.Category.Name</button>
+		</div>
+       <div class="col-6 text-end">           
+             <a asp-action="Index" class="btn btn-dark">Go to Home</a>
+		</div>
+	</div>
+      <form method="post">
+            <input hidden asp-for="ProductId" />
+<div>
+       <hr />   
+
+     
+
+       <div class="row">
+           <div class="col-sm-8">
+               <div class="row">
+                   <div class="col-sm-4 p-2">
+               <b>@Html.DisplayNameFor(model => model.Product.Price)</b>
+               </div>
+               <div class="col-sm-8 p-2">
+               	
+					<b>	&#x20B9;@Model.Product.Price &nbsp;</b><small style="font-size: 12px"><del >&#x20B9;@Model.Product.ListPrice</del></small><span  style="font-size: 15px; color:#ff905a;">&nbsp;(@Model.Product.DiscountPerc% off)</span>
+						
+               </div>
+                <div class="col-sm-4 p-2">
+                <b>@Html.DisplayNameFor(model => model.Product.Description)</b>
+                </div>
+                <div class="col-sm-8 p-2">
+                @Html.DisplayFor(model => model.Product.Description)
+                </div>
+
+                <div class="col-sm-4 p-2">
+                <b>@Html.DisplayNameFor(model => model.Count)</b>
+                </div>
+                <div class="col-sm-8 p-2">
+                @Html.TextBoxFor(model => model.Count,new {@class="form-group",@type="number"})
+                </div>
+                <div class="col-sm-6 p-2">
+                    @*<a class="btn btn-warning form-control p-3" style="height:50px; background-color:#ff9f00e6;" href="/"><i class="bi bi-cart"></i>Add to Cart</a>*@
+                 <button type="submit" asp-action="Details" asp-controller="Home" value="Add to Cart" class="btn btn-primary form-control" style="height:50px;"><i class="bi bi-cart"></i>Add to Cart</button>
+                </div>
+                <div class="col-sm-6 p-2">
+                   <a class="btn btn-info form-control p-3" style="height:50px; background-color:#fc6922e0;" href="/"><i class="bi bi-lightning-fill"></i>Buy Now</a>
+                </div>
+               
+               </div>
+           </div>
+
+           <div class="col-sm-4">
+               <img src="@Model.Product.ImageUrl" class="img-thumbnail" alt="">
+           </div>          
+           
+       </div>
+
+</div>
+</form>

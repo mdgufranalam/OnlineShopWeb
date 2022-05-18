@@ -10,10 +10,23 @@ namespace OnlineShop.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly IHttpClientHelper httpClientHelper;
+        private readonly Auth0 auth;
+        private readonly IAuth0ClientHelper auth0ClientHelper;
 
-        public CategoryController(IHttpClientHelper httpClientHelper)
+        public CategoryController(IHttpClientHelper httpClientHelper,Auth0 auth,IAuth0ClientHelper auth0ClientHelper)
         {
             this.httpClientHelper = httpClientHelper;
+            this.auth = auth;
+            this.auth0ClientHelper = auth0ClientHelper;
+            if (auth.expires_out < auth.current_time)
+            {
+                var authres= auth0ClientHelper.GetTokenAsync(this.auth).GetAwaiter().GetResult();
+                if (authres.Success)
+                {
+                    this.auth = authres.Data;
+                }
+            }
+            httpClientHelper.auth=auth;
         }
 
 
@@ -26,8 +39,21 @@ namespace OnlineShop.Areas.Admin.Controllers
                 if (TempData.ContainsKey("Result"))
                     ViewData["Result"]=TempData["Result"] ;
                 var apiresult=await httpClientHelper.GetAsync("Category");
-                IEnumerable<Category> categories = JsonConvert.DeserializeObject<IEnumerable<Category>>(apiresult.Data);
-                return View(categories);
+                if(apiresult.Success)
+                {
+                    IEnumerable<Category> categories = JsonConvert.DeserializeObject<IEnumerable<Category>>(apiresult.Data);
+                    return View(categories);
+                }
+                else if(!String.IsNullOrEmpty(apiresult.Message))
+                {
+                    return Json(apiresult);
+                }
+                else
+                {
+                    return View(new List<Product>());
+                }
+                 
+               
             }
             catch (Exception)
             {

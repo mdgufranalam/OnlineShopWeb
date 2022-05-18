@@ -13,68 +13,98 @@
 		</div>
 	</div>
     <hr />
+
+
+
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+   
+    <div class="col-md-8">
+         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
+        <div class="row">
+            <div class="col-md-12">
+             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            </div>
+            
+        </div>
+       
+         <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                <label asp-for="ListPrice" class="control-label"></label>
+                <input asp-for="ListPrice" class="form-control" />
+                <span asp-validation-for="ListPrice" class="text-danger"></span>
+            </div>
+           
+            </div>
+             <div class="col-md-6">
+                  <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            
+            </div>
+        </div>
+          <div class="row">
+            <div class="col-md-12">
+                 <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                @* <input asp-for="Description" class="form-control" />*@
                <textarea class="form-control" id="Description" rows="3" asp-for="Description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ListPrice" class="control-label"></label>
-                <input asp-for="ListPrice" class="form-control" />
-                <span asp-validation-for="ListPrice" class="text-danger"></span>
+            
             </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            @*<div class="form-group">
-                <label asp-for="Price50" class="control-label"></label>
-                <input asp-for="Price50" class="form-control" />
-                <span asp-validation-for="Price50" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                @*<input asp-for="ImageUrl" class="form-control" />*@
-                <input asp-for="ImageUrl" class="form-control" type="file" name="file" id="imagefile">
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-           @* <div class="form-group">
-                <label asp-for="CreatedDateTime" class="control-label"></label>
-                <input asp-for="CreatedDateTime" class="form-control" />
-                <span asp-validation-for="CreatedDateTime" class="text-danger"></span>
-            </div>*@
-           @* <div class="form-group">
-                <label asp-for="LastUpdateDate" class="control-label"></label>
-                <input asp-for="LastUpdateDate" class="form-control" />
-                <span asp-validation-for="LastUpdateDate" class="text-danger"></span>
-            </div>*@
+        </div>
+        <div class="row">
+            <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
                 @*<input asp-for="CategoryId" class="form-control" />*@
                 <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories,"Id","Name"))"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" onclick="return ValidateInput()" class="btn btn-primary" />
             </div>
-        </form>
+            <div class="col-md-6">
+                 <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label"></label>
+                @*<input asp-for="ImageUrl" class="form-control" />*@
+                <input asp-for="ImageUrl" class="form-control" type="file" name="file" id="imagefile" onchange="readURL(this);">
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+            </div>
+             
+        </div>
+         <div class="row">
+            <div class="col-md-6">
+              
+            </div>
+             <div class="col-md-6">
+             <div class="form-group">
+                 <div class="d-flex flex-row-reverse">
+                 <div class="p-2"><input type="submit" value="Create" onclick="return ValidateInput()" class="btn btn-primary" /></div>
+                   </div>
+                
+            </div>
+            </div>
+        </div>  
+         </form>
     </div>
+       
+   <div class="col-md-4">
+        <div class="row"> 
+            <div class="col-md-12">
+                 <img src="" class="img-thumbnail" alt="" id="productimg">
+            </div>
+        </div>
+        
+    </div>
+  
 </div>
 
 
@@ -95,4 +125,16 @@
 		}
 		return true;
 	}
+
+    function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      $('#productimg').attr('src', e.target.result);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 </script>

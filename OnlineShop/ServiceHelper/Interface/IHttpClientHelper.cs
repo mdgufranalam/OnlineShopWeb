@@ -10,7 +10,7 @@ namespace OnlineShop.ServiceHelper.Interface
         public Task<ServiceResult<string>> DeleteAsync(string actionUrl);
 
         public Task<ServiceResult<string>> PostMultipartAsync(string actionUrl, string data,IFormFile file);
-
+        public Auth0 auth { get; set; }
     }
    
 }

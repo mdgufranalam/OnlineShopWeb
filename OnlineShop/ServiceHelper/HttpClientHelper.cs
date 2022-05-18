@@ -9,11 +9,13 @@ namespace OnlineShop.ServiceHelper
     public class HttpClientHelper: IHttpClientHelper
     {
         private readonly IHttpClientFactory httpClientFactory;
+        private Auth0 auth { get; set; } = Auth0.Instance;
+        Auth0 IHttpClientHelper.auth { get { return auth; } set{ auth = value; } }
 
         public HttpClientHelper(IHttpClientFactory httpClientFactory)
         {
             this.httpClientFactory = httpClientFactory;
-
+           
         }
 
         ////action Url : Category/1,  only action url except Base url
@@ -27,6 +29,8 @@ namespace OnlineShop.ServiceHelper
                 {
                     //specify to use TLS 1.2 as default connection
                     System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                    if(!String.IsNullOrEmpty(auth.access_token))
+                     _client.DefaultRequestHeaders.TryAddWithoutValidation("authorization","Bearer "+ auth.access_token);
                     var result = await _client.GetAsync(actionUrl);
                     if (result.IsSuccessStatusCode)
                     {
@@ -40,6 +44,11 @@ namespace OnlineShop.ServiceHelper
                     else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
                     {
                         serviceResult.Message = await result.Content.ReadAsStringAsync();
+                        serviceResult.Success = false;
+                    }
+                    else if((int)result.StatusCode == StatusCodes.Status401Unauthorized)
+                    {
+                        serviceResult.Message = "Unauthorized Access of API.";
                         serviceResult.Success = false;
                     }
                     //var rs2 =await _client.GetFromJsonAsync<List<Quotes>>(actionUrl);
@@ -71,6 +80,8 @@ namespace OnlineShop.ServiceHelper
                     //specify to use TLS 1.2 as default connection
                     System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                    if (!String.IsNullOrEmpty(auth.access_token))
+                        _client.DefaultRequestHeaders.TryAddWithoutValidation("authorization", "Bearer " + auth.access_token);
                     var result = await _client.PostAsync(actionUrl, content);
                     if (result.IsSuccessStatusCode)
                     {
@@ -84,6 +95,11 @@ namespace OnlineShop.ServiceHelper
                     else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
                     {
                         serviceResult.Message = await result.Content.ReadAsStringAsync();
+                        serviceResult.Success = false;
+                    }
+                    else if ((int)result.StatusCode == StatusCodes.Status401Unauthorized)
+                    {
+                        serviceResult.Message = "Unauthorized Access of API.";
                         serviceResult.Success = false;
                     }
                     //var rs2 =await _client.GetFromJsonAsync<List<Quotes>>(actionUrl);
@@ -116,6 +132,8 @@ namespace OnlineShop.ServiceHelper
                     //specify to use TLS 1.2 as default connection
                     System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     //HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                    if (!String.IsNullOrEmpty(auth.access_token))
+                        _client.DefaultRequestHeaders.TryAddWithoutValidation("authorization", "Bearer " + auth.access_token);
                     var result = await _client.DeleteAsync(actionUrl);
                     if (result.IsSuccessStatusCode)
                     {
@@ -129,6 +147,11 @@ namespace OnlineShop.ServiceHelper
                     else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
                     {
                         serviceResult.Message = await result.Content.ReadAsStringAsync();
+                        serviceResult.Success = false;
+                    }
+                    else if ((int)result.StatusCode == StatusCodes.Status401Unauthorized)
+                    {
+                        serviceResult.Message = "Unauthorized Access of API.";
                         serviceResult.Success = false;
                     }
                     //var rs2 =await _client.GetFromJsonAsync<List<Quotes>>(actionUrl);
@@ -160,6 +183,8 @@ namespace OnlineShop.ServiceHelper
                     //specify to use TLS 1.2 as default connection
                     System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                    if (!String.IsNullOrEmpty(auth.access_token))
+                        _client.DefaultRequestHeaders.TryAddWithoutValidation("authorization", "Bearer " + auth.access_token);
                     var result = await _client.PutAsync(actionUrl, content);
                     if (result.IsSuccessStatusCode)
                     {
@@ -173,6 +198,11 @@ namespace OnlineShop.ServiceHelper
                     else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
                     {
                         serviceResult.Message = await result.Content.ReadAsStringAsync();
+                        serviceResult.Success = false;
+                    }
+                    else if ((int)result.StatusCode == StatusCodes.Status401Unauthorized)
+                    {
+                        serviceResult.Message = "Unauthorized Access of API.";
                         serviceResult.Success = false;
                     }
                     //var rs2 =await _client.GetFromJsonAsync<List<Quotes>>(actionUrl);
@@ -216,8 +246,7 @@ namespace OnlineShop.ServiceHelper
                             
                            
                             //HttpContent datacontent = new StringContent(data, Encoding.UTF8, "application/json");                           
-                            MultipartFormDataContent multiContent = new MultipartFormDataContent();
-                           
+                            MultipartFormDataContent multiContent = new MultipartFormDataContent();                          
                             
                             multiContent.Add(bytes, "image", file.FileName);
                             //multiContent.Add(datacontent, "product");
@@ -236,6 +265,11 @@ namespace OnlineShop.ServiceHelper
                             else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
                             {
                                 serviceResult.Message = await result.Content.ReadAsStringAsync();
+                                serviceResult.Success = false;
+                            }
+                            else if ((int)result.StatusCode == StatusCodes.Status401Unauthorized)
+                            {
+                                serviceResult.Message = "Unauthorized Access of API.";
                                 serviceResult.Success = false;
                             }
                             //var rs2 =await _client.GetFromJsonAsync<List<Quotes>>(actionUrl);

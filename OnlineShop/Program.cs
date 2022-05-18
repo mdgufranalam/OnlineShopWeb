@@ -28,6 +28,26 @@ builder.Services.AddHttpClient("ShopApi", httpClient =>
 
 builder.Services.AddRazorPages();
 
+//binding the auth0 property
+var auth0 = Auth0.Instance;
+builder.Configuration.Bind("auth0", auth0);
+builder.Services.AddSingleton(auth0);
+builder.Services.AddSingleton<IAuth0ClientHelper, Auth0ClientHelper>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+//
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,14 +65,14 @@ app.UseRouting();
 app.UseAuthentication();;
 
 app.UseAuthorization();
-
+app.UseSession();
 //app.MapControllerRoute(
 //    name: "default",
 //    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Customer}/{controller=Product}/{action=Index}/{id?}");
+    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 //app.UseEndpoints(endpoints =>
 //{
