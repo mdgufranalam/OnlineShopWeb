@@ -8,6 +8,6 @@
 @foreach (var item in Model)
 {
                   
-                 <li><a  class="dropdown-item" asp-controller="Product" asp-action="CategoryWiseProduct" asp-route-category="@item.Name">@item.Name</a></li>
+                 <li><a  class="dropdown-item" asp-controller="Home" asp-action="CategoryWiseProduct" asp-route-category="@item.Name">@item.Name</a></li>
 }           
     

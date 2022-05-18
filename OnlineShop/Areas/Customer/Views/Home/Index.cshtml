@@ -14,12 +14,12 @@
              </button>
             
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                 <li><a class="dropdown-item" asp-controller="Product" asp-action="SortProduct" asp-route-criteria="betteroffer" asp-route-sort="desc">Better Discount</a></li>
-               <li><a class="dropdown-item" asp-controller="Product" asp-action="SortProduct" asp-route-criteria="price" asp-route-sort="asc">Price : Low to High</a></li>
-                 <li><a class="dropdown-item" asp-controller="Product" asp-action="SortProduct" asp-route-criteria="price" asp-route-sort="desc">Price : High to Low</a></li>
-                     <li><a class="dropdown-item" asp-controller="Product" asp-action="SortProduct" asp-route-criteria="category" asp-route-sort="asc">Category : Ascending</a></li>
-              <li><a class="dropdown-item" asp-controller="Product" asp-action="SortProduct" asp-route-criteria="category" asp-route-sort="desc">Category : Descending</a></li>
-                 <li><a class="dropdown-item" asp-controller="Product" asp-action="SortProduct" asp-route-criteria="lastupdatedate" asp-route-sort="asc">Oldest</a></li></ul>
+                 <li><a class="dropdown-item"  asp-controller="Home" asp-action="SortProduct" asp-route-criteria="betteroffer" asp-route-sort="desc">Better Discount</a></li>
+               <li><a class="dropdown-item"   asp-controller="Home" asp-action="SortProduct" asp-route-criteria="price" asp-route-sort="asc">Price : Low to High</a></li>
+                 <li><a class="dropdown-item"   asp-controller="Home" asp-action="SortProduct" asp-route-criteria="price" asp-route-sort="desc">Price : High to Low</a></li>
+                     <li><a class="dropdown-item" asp-controller="Home" asp-action="SortProduct" asp-route-criteria="category" asp-route-sort="asc">Category : Ascending</a></li>
+              <li><a class="dropdown-item" asp-controller="Home" asp-action="SortProduct" asp-route-criteria="category" asp-route-sort="desc">Category : Descending</a></li>
+                 <li><a class="dropdown-item" asp-controller="Home" asp-action="SortProduct" asp-route-criteria="lastupdatedate" asp-route-sort="asc">Oldest</a></li></ul>
              </div>
   
 </div>
@@ -30,7 +30,7 @@
         </button>
              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                    
-              <li><a  class="dropdown-item" asp-controller="Product" asp-action="CategoryWiseProduct" asp-route-category="all">All</a></li>
+              <li><a  class="dropdown-item" asp-controller="Home" asp-action="CategoryWiseProduct" asp-route-category="all">All</a></li>
               
               @await Component.InvokeAsync("CategoryMenu")
              </ul>
@@ -47,7 +47,7 @@
                             <div class="row p-2">
                                 <div class="col-12 p-1" style="border:1px solid #008cba; border-radius: 5px;">
                                     <div class="card">
-                                        <a asp-action="Details" asp-route-id="@product.Id">
+                                        <a asp-action="Details" asp-route-ProductId="@product.Id">
                                         <img src="@product.ImageUrl" class="card-img-top rounded"/>
                                         </a>
                                         <div class="card-body">
@@ -67,7 +67,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <a asp-action="Details" class="btn btn-primary form-control" asp-route-id="@product.Id">
+                                        <a asp-action="Details" class="btn btn-primary form-control" asp-route-ProductId="@product.Id">
                                             Details
                                         </a>
                                     </div>

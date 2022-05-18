@@ -15,9 +15,10 @@ namespace OnlineShop.Areas.Customer.Controllers
         private ServiceResult<string> exception;
         private readonly Auth0 auth;
         private readonly IAuth0ClientHelper auth0ClientHelper;
+        private readonly ApplicationDbContext _db;
 
 
-        public HomeController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper)
+        public HomeController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper, ApplicationDbContext db)
         {
             this.httpClientHelper = httpClientHelper;
             this.auth = auth;
@@ -31,6 +32,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 }
             }
             httpClientHelper.auth = auth;
+            _db = db;
         }
 
         public async Task<IActionResult> Index()
@@ -80,12 +82,12 @@ namespace OnlineShop.Areas.Customer.Controllers
             }
         }
         // GET: ProductController/Details/5
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult> Details(int ProductId)
         {
             try
             {
                 ShoppingCart shoppingCart =new ShoppingCart();
-                var apiresult = await httpClientHelper.GetAsync("Product/" + id);
+                var apiresult = await httpClientHelper.GetAsync("Product/" + ProductId);
                 var products = JsonConvert.DeserializeObject<Product>(apiresult.Data);
                 if (products != null)
                 {
@@ -100,7 +102,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                     shoppingCart = new()
                     {
                         Count = 1,
-                        ProductId = id,
+                        ProductId = ProductId,
                         Product = products
                     };
                     return View(shoppingCart);
@@ -129,15 +131,16 @@ namespace OnlineShop.Areas.Customer.Controllers
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 shoppingCart.ApplicationUserId = claim.Value;
                
-                var apiresult = await httpClientHelper.GetAsync("ShopingCart");               
-                if (apiresult.Success)
-                {
-                    if(String.IsNullOrEmpty(apiresult.Data))
-                    {
-                        HttpContext.Session.SetInt32(SD.SessionCart,Convert.ToInt32(apiresult.Data));
-                    }
-                }
+                //var apiresult = await httpClientHelper.PostAsync("ShopingCart",JsonConvert.SerializeObject(shoppingCart));               
+                //if (apiresult.Success)
+                //{
+                //    if(String.IsNullOrEmpty(apiresult.Data))
+                //    {
+                //        HttpContext.Session.SetInt32(SD.SessionCart,Convert.ToInt32(apiresult.Data));
+                //    }
+                //}
                 return NotFound();
+
             }
             catch (Exception ex)
             {
