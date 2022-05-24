@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using OnlineShop.Models;
@@ -115,7 +116,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                     {
                         Count = 1,
                         ProductId = ProductId,
-                        Product = products
+                        Products = products
                     };
                     return View(shoppingCart);
                 }
@@ -135,22 +136,28 @@ namespace OnlineShop.Areas.Customer.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Details(ShoppingCart shoppingCart)
+        [Authorize]
+        public async Task<ActionResult> Details(ShoppingCart shoppingCart,string? mode=null)
         {
             try
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 shoppingCart.ApplicationUserId = claim.Value;
-               
-                //var apiresult = await httpClientHelper.PostAsync("ShopingCart",JsonConvert.SerializeObject(shoppingCart));               
-                //if (apiresult.Success)
-                //{
-                //    if(String.IsNullOrEmpty(apiresult.Data))
-                //    {
-                //        HttpContext.Session.SetInt32(SD.SessionCart,Convert.ToInt32(apiresult.Data));
-                //    }
-                //}
+
+                var apiresult = await httpClientHelper.PostAsync("ShoppingCart", JsonConvert.SerializeObject(shoppingCart));
+                if (apiresult.Success)
+                {
+                    if (!String.IsNullOrEmpty(apiresult.Data))
+                    {
+                        HttpContext.Session.SetInt32(SD.SessionCart, Convert.ToInt32(apiresult.Data));
+                    }
+                    if(mode=="buy")
+                    {
+                        return RedirectToAction("Index","Cart");
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
                 return NotFound();
 
             }
@@ -172,6 +179,10 @@ namespace OnlineShop.Areas.Customer.Controllers
         {
             try
             {
+                if(category.ToLower() == "all")
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 IEnumerable<Product> products;
 
                 var apiresult = await httpClientHelper.GetAsync("Product/SearchProducts/" + category);

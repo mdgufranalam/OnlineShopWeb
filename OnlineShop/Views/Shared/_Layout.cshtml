@@ -41,7 +41,7 @@ import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm"
     <header>
          <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><img class="d-inline-block align-text-top" src="~/contents/images/LogoMakr-9ZMVLo.png" /></a>
+    <a class="navbar-brand"asp-controller="Customer" ><img class="d-inline-block align-text-top" src="~/contents/images/LogoMakr-9ZMVLo.png" /></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -105,13 +105,24 @@ import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm"
 
     <div class="container">
         <main role="main" class="pb-3">
+            <div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center breaking-news bg-gradient"">
+                <div class="d-flex flex-row flex-grow-1 flex-fill justify-content-center bg-danger py-2 text-white px-1 news"><span class="d-flex align-items-center">&nbsp;Updates</span></div>
+                <marquee class="news-scroll" behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"> <span class="dot"></span> <a href="#"> This Site is Under Development Phase. </a>
+                </marquee>
+            </div>
+        </div>
+    </div>
+</div>
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-             <div class="d-flex justify-content-center"> &nbsp; Developed and hosted by : <a class="text-decoration-none" style="color:#fe414d;" target="_blank" href="https://www.publicissapient.com/">Md Gufran@*Publicis Sapient*@</a></div>
+             <div class="d-flex justify-content-center"> &nbsp; Developed and hosted by : <a class="text-decoration-none" style="color:#fe414d;" target="_blank" href="https://www.linkedin.com/in/md-gufran-alam-84b135168/">Md Gufran@*Publicis Sapient*@</a></div>
            <div class="d-flex justify-content-center">&copy; 2022 - OnlineShop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></div>
           
         </div>

@@ -28,7 +28,7 @@ namespace OnlineShop.Components
                     }
                     else
                     {
-                        var apiresult = httpClientHelper.GetAsync("ShopingCart/CartCount/").GetAwaiter().GetResult();
+                        var apiresult = httpClientHelper.GetAsync("ShoppingCart/CartCount/" + claim.Value).GetAwaiter().GetResult();
                         if(apiresult.Success)
                         {
                             HttpContext.Session.SetInt32(SD.SessionCart, Convert.ToInt32(apiresult.Data));

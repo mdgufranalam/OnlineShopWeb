@@ -16,6 +16,8 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProvide
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 var constr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(constr));
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe")); //Payment Options
+
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<IHttpClientHelper, HttpClientHelper>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
