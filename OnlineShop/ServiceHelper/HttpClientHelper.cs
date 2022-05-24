@@ -256,20 +256,25 @@ namespace OnlineShop.ServiceHelper
                             {
                                 
                                 serviceResult.Data = await result.Content.ReadAsStringAsync();
-                            }
-                            else if ((int)result.StatusCode == StatusCodes.Status404NotFound)
-                            {
-                                serviceResult.Message = await result.Content.ReadAsStringAsync();
-                                serviceResult.Success = false;
-                            }
-                            else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
-                            {
-                                serviceResult.Message = await result.Content.ReadAsStringAsync();
-                                serviceResult.Success = false;
-                            }
+                            }                            
                             else if ((int)result.StatusCode == StatusCodes.Status401Unauthorized)
                             {
                                 serviceResult.Message = "Unauthorized Access of API.";
+                                serviceResult.Success = false;
+                            }
+                            //else if ((int)result.StatusCode == StatusCodes.Status404NotFound)
+                            //{
+                            //    serviceResult.Message = await result.Content.ReadAsStringAsync();
+                            //    serviceResult.Success = false;
+                            //}
+                            //else if ((int)result.StatusCode == StatusCodes.Status400BadRequest)
+                            //{
+                            //    serviceResult.Message = await result.Content.ReadAsStringAsync();
+                            //    serviceResult.Success = false;
+                            //}
+                            else
+                            {
+                                serviceResult.Message = "Error while uploading the image, Try again with jpeg image.";
                                 serviceResult.Success = false;
                             }
                             //var rs2 =await _client.GetFromJsonAsync<List<Quotes>>(actionUrl);

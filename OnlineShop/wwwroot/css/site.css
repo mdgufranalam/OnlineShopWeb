@@ -21,10 +21,10 @@ body {
 .card:hover {
     transform: scale(1.03); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
-.card-img-top{
+/*.card-img-top{
     width:251px;
     height:225px;
-}
+}*/
 
 /*test*/
 /*body {

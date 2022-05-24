@@ -3080,9 +3080,10 @@ fieldset:disabled .btn {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #e83283;
-  border-color: #e83283;
+    color: #fff;
+    /*background-color: #e83283;*/
+    background-color: #006f88e3;
+    border-color: #e83283;
 }
 
 .btn-primary:hover {
@@ -8475,8 +8476,9 @@ fieldset:disabled .btn {
 }
 
 .bg-primary {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+    --bs-bg-opacity: 1;
+    /*background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;*/
+    background-color: #006f88;
 }
 
 .bg-secondary {

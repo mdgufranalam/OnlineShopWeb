@@ -16,14 +16,13 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProvide
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 var constr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(constr));
-
-
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<IHttpClientHelper, HttpClientHelper>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+var APIUrl = builder.Configuration["OnlineShopAPIUrl"];
 builder.Services.AddHttpClient("ShopApi", httpClient =>
 {
-    httpClient.BaseAddress = new Uri("https://localhost:7151/api/");
+    httpClient.BaseAddress = new Uri(APIUrl);
 });
 
 builder.Services.AddRazorPages();

@@ -69,8 +69,20 @@ namespace OnlineShop.Areas.Customer.Controllers
             try
             {
                 var apiresult = await httpClientHelper.GetAsync("Product/SearchProducts/" + searchstring);
-                var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
-                return View(products);
+                if(apiresult.Success)
+                {
+                    var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(apiresult.Data);
+                    return View(products);
+                }
+                else
+                {
+                    exception = new ServiceResult<string>();
+                    exception.Success = false;
+                    exception.Message =$"{searchstring} Not Found.";
+                    ViewBag.Result = JsonConvert.SerializeObject(exception);
+                    return View(new List<Product>() { });
+                }
+                
             }
             catch (Exception ex)
             {

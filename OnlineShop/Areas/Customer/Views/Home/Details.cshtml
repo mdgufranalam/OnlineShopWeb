@@ -33,7 +33,7 @@
                 <b>@Html.DisplayNameFor(model => model.Product.Description)</b>
                 </div>
                 <div class="col-sm-8 p-2">
-                @Html.DisplayFor(model => model.Product.Description)
+                @Html.Raw(@Model.Product.Description)
                 </div>
 
                 <div class="col-sm-4 p-2">
@@ -44,10 +44,10 @@
                 </div>
                 <div class="col-sm-6 p-2">
                     @*<a class="btn btn-warning form-control p-3" style="height:50px; background-color:#ff9f00e6;" href="/"><i class="bi bi-cart"></i>Add to Cart</a>*@
-                 <button type="submit" asp-action="Details" asp-controller="Home" value="Add to Cart" class="btn btn-primary form-control" style="height:50px;"><i class="bi bi-cart"></i>Add to Cart</button>
+                 <button type="submit" asp-action="Details" asp-controller="Home" value="Add to Cart" class="btn btn-primary form-control" style="height:50px; background-color:#ff9f00d1;"><i class="bi bi-cart"></i><b>ADD TO CART</b></button>
                 </div>
                 <div class="col-sm-6 p-2">
-                   <a class="btn btn-info form-control p-3" style="height:50px; background-color:#fc6922e0;" href="/"><i class="bi bi-lightning-fill"></i>Buy Now</a>
+                   <a class="btn btn-info form-control p-3" style="height:50px; background-color:#fc6922e0;" href="/"><i class="bi bi-lightning-fill"></i><b>BUY NOW</b></a>
                 </div>
                
                </div>

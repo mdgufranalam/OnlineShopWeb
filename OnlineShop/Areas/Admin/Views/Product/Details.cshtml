@@ -10,9 +10,9 @@
             <h2>Product Details</h2>
 		</div>
        <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">
+          @*  <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">
                <i class="bi bi-pencil-square"></i>&nbsp; Edit
-			</a>
+			</a>*@
              <a asp-action="Index" class="btn btn-dark">Back to List</a>
 		</div>
 	</div>
@@ -80,6 +80,15 @@
             </div>
          @*<select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories,"Id","Name"))"></select>*@
          <span asp-validation-for="CategoryId" class="text-danger"></span>
+         </dd>
+         <dd class = "col-sm-4">
+         </dd>
+         <dd class = "col-sm-8">
+             <div class="btn-group-md">
+                
+                 <a class="btn btn-info" asp-action="Edit" asp-controller="Product" asp-route-id="@Model.Id"><i class="bi bi-pencil-square"></i> Edit</a>
+                  <a class="btn btn-danger" asp-action="Delete" asp-controller="Product" asp-route-id="@Model.Id"><i class="bi bi-trash"></i>Delete</a>
+             </div>
          </dd>
     </dl>
         </div >
