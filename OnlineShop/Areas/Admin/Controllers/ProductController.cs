@@ -53,6 +53,24 @@ namespace OnlineShop.Areas.Admin.Controllers
 
         }
 
+        public async Task<ActionResult> GetAllProducts()
+        {
+            try
+            {
+                var apiresult = await httpClientHelper.GetAsync("Product");
+                var products = JsonConvert.DeserializeObject<List<Product>>(apiresult.Data);
+                return Json(new { data = products });               
+            }
+            catch (Exception ex)
+            {
+                exception = new ServiceResult<string>();
+                exception.Success = false;
+                exception.Message = ex.Message;
+                return Json(new { error = exception });
+            }
+
+        }
+
         // GET: ProductController/Details/5
         public async Task<ActionResult> Details(int id)
         {

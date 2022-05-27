@@ -5,6 +5,7 @@ using OnlineShop.Models;
 using OnlineShop.ServiceHelper;
 using OnlineShop.ServiceHelper.Interface;
 using OnlineShop.Utility;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<IHttpClientHelper, HttpClientHelper>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
 var APIUrl = builder.Configuration["OnlineShopAPIUrl"];
 builder.Services.AddHttpClient("ShopApi", httpClient =>
 {
@@ -63,6 +67,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseAuthentication();;
 
 app.UseAuthorization();

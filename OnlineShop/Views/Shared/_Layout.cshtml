@@ -14,6 +14,12 @@
     <script src="~/lib/jquery/dist/jquery.min.js">
 import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm";
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="//cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script src="https://cdn.tiny.cloud/1/n94ifuzvl80pchikopiwgz2esrw8n28dwcywvpejlqrregfp/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     
 </head>
 <body>
@@ -67,6 +73,11 @@ import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm"
 								</div>
 							</li>
 						}
+                        <li class="nav-item">
+							<a class=nav-link asp-area="Admin" asp-controller="Order" asp-action="Index">
+								Manage Order
+							</a>
+						</li>
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
         </li>
@@ -129,12 +140,7 @@ import { Toast } from "../../wwwroot/lib/bootstrap - Copy/dist/js/bootstrap.esm"
     </footer>
 
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script src="//cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-	<script src="https://cdn.tiny.cloud/1/n94ifuzvl80pchikopiwgz2esrw8n28dwcywvpejlqrregfp/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
