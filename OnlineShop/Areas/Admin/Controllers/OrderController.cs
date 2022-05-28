@@ -193,7 +193,7 @@ namespace OnlineShop.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+        //[Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelOrder()
         {
@@ -201,7 +201,7 @@ namespace OnlineShop.Areas.Admin.Controllers
             try
             {
                 string PaymentsStatus = "";
-                var OrderHeaderDtls = await httpClientHelper.GetAsync("OrderHeader/GetFirstOrDefaultNoTrack" + OrderVM.OrderHeader.Id);
+                var OrderHeaderDtls = await httpClientHelper.GetAsync("OrderHeader/GetFirstOrDefaultNoTrack/" + OrderVM.OrderHeader.Id);
                 if (OrderHeaderDtls.Success)
                 {
                     var orderHeader=JsonConvert.DeserializeObject<OrderHeader>(OrderHeaderDtls.Data);   

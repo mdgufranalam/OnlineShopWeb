@@ -119,99 +119,114 @@ namespace OnlineShop.Areas.Customer.Controllers
         {
             try
             {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                var apiresult = await httpClientHelper.GetAsync("ShoppingCart/GetShoppingCart/" + claim.Value);
-                if (apiresult.Success)
+                if(string.IsNullOrEmpty(ShoppingCartVM.OrderHeader.PhoneNumber) || ShoppingCartVM.OrderHeader.PhoneNumber.Length<10)
                 {
-                    ShoppingCartVM.ListCart = JsonConvert.DeserializeObject<IEnumerable<ShoppingCart>>(apiresult.Data);
+                    ModelState.AddModelError("OrderHeader.PhoneNumber", "The PhoneNumber field is required.");
+                    return RedirectToAction("Summary");
                 }
-                ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
-                ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
-
-
-                foreach (var cart in ShoppingCartVM.ListCart)
+                else if(ModelState.IsValid)
                 {
-                    cart.Price = cart.Products.Price;
-                    ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
-                }
-                var UserDetails = await httpClientHelper.GetAsync("ApplicationUser/" + claim.Value);
-                ApplicationUser applicationUser;
-                if (UserDetails.Success)
-                {
-                    applicationUser = JsonConvert.DeserializeObject<ApplicationUser>(UserDetails.Data);
-                }
-                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
-                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
-
-                var CreateOrderHeader = await httpClientHelper.PostAsync("OrderHeader", JsonConvert.SerializeObject(ShoppingCartVM.OrderHeader));
-                if (CreateOrderHeader.Success)
-                {
-                    ShoppingCartVM.OrderHeader = JsonConvert.DeserializeObject<OrderHeader>(CreateOrderHeader.Data);
-                }
-
-                foreach (var cart in ShoppingCartVM.ListCart)
-                {
-                    OrderDetail orderDetail = new()
+                    var claimsIdentity = (ClaimsIdentity)User.Identity;
+                    var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                    var apiresult = await httpClientHelper.GetAsync("ShoppingCart/GetShoppingCart/" + claim.Value);
+                    if (apiresult.Success)
                     {
-                        ProductId = cart.ProductId,
-                        OrderId = ShoppingCartVM.OrderHeader.Id,
-                        Price = cart.Price,
-                        Count = cart.Count
-                    };
-                    var CreatedOrderDetails = await httpClientHelper.PostAsync("OrderDetails", JsonConvert.SerializeObject(orderDetail));
-                    if (CreatedOrderDetails.Success)
-                    {
-                        orderDetail = JsonConvert.DeserializeObject<OrderDetail>(CreatedOrderDetails.Data);
+                        ShoppingCartVM.ListCart = JsonConvert.DeserializeObject<IEnumerable<ShoppingCart>>(apiresult.Data);
                     }
-                }
+                    ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
+                    ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
 
-                #region commented for payment
 
-                var domain = $"http://gufrankhan5252-001-site1.dtempurl.com/";
-                var options = new SessionCreateOptions
-                {
-                    PaymentMethodTypes = new List<string>
+                    foreach (var cart in ShoppingCartVM.ListCart)
+                    {
+                        cart.Price = cart.Products.Price;
+                        ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+                    }
+                    var UserDetails = await httpClientHelper.GetAsync("ApplicationUser/" + claim.Value);
+                    ApplicationUser applicationUser;
+                    if (UserDetails.Success)
+                    {
+                        applicationUser = JsonConvert.DeserializeObject<ApplicationUser>(UserDetails.Data);
+                    }
+                    ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+                    ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+
+                    var CreateOrderHeader = await httpClientHelper.PostAsync("OrderHeader", JsonConvert.SerializeObject(ShoppingCartVM.OrderHeader));
+                    if (CreateOrderHeader.Success)
+                    {
+                        ShoppingCartVM.OrderHeader = JsonConvert.DeserializeObject<OrderHeader>(CreateOrderHeader.Data);
+                    }
+
+                    foreach (var cart in ShoppingCartVM.ListCart)
+                    {
+                        OrderDetail orderDetail = new()
+                        {
+                            ProductId = cart.ProductId,
+                            OrderId = ShoppingCartVM.OrderHeader.Id,
+                            Price = cart.Price,
+                            Count = cart.Count
+                        };
+                        var CreatedOrderDetails = await httpClientHelper.PostAsync("OrderDetails", JsonConvert.SerializeObject(orderDetail));
+                        if (CreatedOrderDetails.Success)
+                        {
+                            orderDetail = JsonConvert.DeserializeObject<OrderDetail>(CreatedOrderDetails.Data);
+                        }
+                    }
+
+                    #region commented for payment
+
+                    var domain = $"http://gufrankhan5252-001-site1.dtempurl.com/";
+                    var options = new SessionCreateOptions
+                    {
+                        PaymentMethodTypes = new List<string>
                     {
                       "card",
                     },
-                    LineItems = new List<SessionLineItemOptions>(),
-                    Mode = "payment",
-                    SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-                    CancelUrl = domain + $"customer/cart/index",
-                };
-
-                foreach (var item in ShoppingCartVM.ListCart)
-                {
-
-                    var sessionLineItem = new SessionLineItemOptions
-                    {
-                        PriceData = new SessionLineItemPriceDataOptions
-                        {
-                            UnitAmount = (long)(item.Price * 100),//20.00 -> 2000
-                            Currency = "inr",
-                            ProductData = new SessionLineItemPriceDataProductDataOptions
-                            {
-                                Name = item.Products.Title
-                            },
-
-                        },
-                        Quantity = item.Count,
+                        LineItems = new List<SessionLineItemOptions>(),
+                        Mode = "payment",
+                        SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+                        CancelUrl = domain + $"customer/cart/index",
                     };
-                    options.LineItems.Add(sessionLineItem);
 
+                    foreach (var item in ShoppingCartVM.ListCart)
+                    {
+
+                        var sessionLineItem = new SessionLineItemOptions
+                        {
+                            PriceData = new SessionLineItemPriceDataOptions
+                            {
+                                UnitAmount = (long)(item.Price * 100),//20.00 -> 2000
+                                Currency = "inr",
+                                ProductData = new SessionLineItemPriceDataProductDataOptions
+                                {
+                                    Name = item.Products.Title
+                                },
+
+                            },
+                            Quantity = item.Count,
+                        };
+                        options.LineItems.Add(sessionLineItem);
+
+                    }
+
+                    var service = new SessionService();
+                    Session session = service.Create(options);
+                    var sessionsaveapi = await httpClientHelper.PostAsync("OrderHeader/UpdateStripePaymentID", JsonConvert.SerializeObject(new { id = ShoppingCartVM.OrderHeader.Id, session = session.Id, paymentItentId = session.PaymentIntentId }));
+                    if (!sessionsaveapi.Success)
+                    {
+                        return BadRequest("Some Error Occured.");
+                    }
+                    Response.Headers.Add("Location", session.Url);
+                    return new StatusCodeResult(303);
+                    #endregion
                 }
-
-                var service = new SessionService();
-                Session session = service.Create(options);
-                var sessionsaveapi = await httpClientHelper.PostAsync("OrderHeader/UpdateStripePaymentID", JsonConvert.SerializeObject(new { id = ShoppingCartVM.OrderHeader.Id, session = session.Id, paymentItentId = session.PaymentIntentId }));
-                if (!sessionsaveapi.Success)
+                else
                 {
-                    return BadRequest("Some Error Occured.");
+                    return RedirectToAction("Summary");
                 }
-                Response.Headers.Add("Location", session.Url);
-                return new StatusCodeResult(303);
-                #endregion
+               
+                
+
 
             }
             catch (Exception ex)
