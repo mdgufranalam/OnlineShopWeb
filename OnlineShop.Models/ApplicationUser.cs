@@ -11,9 +11,8 @@ namespace OnlineShop.Models
     public class ApplicationUser :IdentityUser
     {
         [Required]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [Display(Name ="Mobile No")]
-
         [Required]
         public string? PhoneNumber { get; set; }
         [Required]

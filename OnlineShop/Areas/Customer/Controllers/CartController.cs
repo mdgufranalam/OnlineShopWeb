@@ -119,13 +119,13 @@ namespace OnlineShop.Areas.Customer.Controllers
         {
             try
             {
-                if(string.IsNullOrEmpty(ShoppingCartVM.OrderHeader.PhoneNumber) || ShoppingCartVM.OrderHeader.PhoneNumber.Length<10)
-                {
-                    ModelState.AddModelError("OrderHeader.PhoneNumber", "The PhoneNumber field is required.");
-                    return RedirectToAction("Summary");
-                }
-                else if(ModelState.IsValid)
-                {
+                //if(string.IsNullOrEmpty(ShoppingCartVM.OrderHeader.PhoneNumber) || ShoppingCartVM.OrderHeader.PhoneNumber.Length<10)
+                //{
+                //    ModelState.AddModelError("OrderHeader.PhoneNumber", "The PhoneNumber field is required.");
+                //    return RedirectToAction("Summary");
+                //}
+                //else if(ModelState.IsValid)
+                //{
                     var claimsIdentity = (ClaimsIdentity)User.Identity;
                     var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                     var apiresult = await httpClientHelper.GetAsync("ShoppingCart/GetShoppingCart/" + claim.Value);
@@ -219,11 +219,11 @@ namespace OnlineShop.Areas.Customer.Controllers
                     Response.Headers.Add("Location", session.Url);
                     return new StatusCodeResult(303);
                     #endregion
-                }
-                else
-                {
-                    return RedirectToAction("Summary");
-                }
+                //}
+                //else
+                //{
+                //    return RedirectToAction("Summary");
+                //}
                
                 
 

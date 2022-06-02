@@ -36,6 +36,7 @@ namespace OnlineShop.Areas.Customer.Controllers
             _db = db;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             try
@@ -65,6 +66,7 @@ namespace OnlineShop.Areas.Customer.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchstring)
         {
             try
