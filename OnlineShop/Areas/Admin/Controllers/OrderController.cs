@@ -5,6 +5,7 @@ using OnlineShop.Models;
 using OnlineShop.Models.ViewModel;
 using OnlineShop.ServiceHelper.Interface;
 using OnlineShop.Utility;
+using Stripe;
 using System.Security.Claims;
 
 namespace OnlineShop.Areas.Admin.Controllers
@@ -16,12 +17,13 @@ namespace OnlineShop.Areas.Admin.Controllers
         private readonly IHttpClientHelper httpClientHelper;
         private readonly Auth0 auth;
         private readonly IAuth0ClientHelper auth0ClientHelper;
+        private readonly ILogger logger;
 
 
         [BindProperty]
         public OrderVM OrderVM { get; set; }
 
-        public OrderController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper)
+        public OrderController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper, ILogger<OrderController> logger)
         {
             this.httpClientHelper = httpClientHelper;
             this.auth = auth;
@@ -35,6 +37,7 @@ namespace OnlineShop.Areas.Admin.Controllers
                 }
             }
             httpClientHelper.auth = auth;
+            this.logger = logger;
         }
         ServiceResult<string> serviceResult = new ServiceResult<string>();
 
@@ -200,6 +203,7 @@ namespace OnlineShop.Areas.Admin.Controllers
             serviceResult = new ServiceResult<string>();
             try
             {
+                logger.LogInformation("CancelOrder() Called.");
                 string PaymentsStatus = "";
                 var OrderHeaderDtls = await httpClientHelper.GetAsync("OrderHeader/GetFirstOrDefaultNoTrack/" + OrderVM.OrderHeader.Id);
                 if (OrderHeaderDtls.Success)
@@ -207,16 +211,17 @@ namespace OnlineShop.Areas.Admin.Controllers
                     var orderHeader=JsonConvert.DeserializeObject<OrderHeader>(OrderHeaderDtls.Data);   
                     if (orderHeader.PaymentStatus == SD.PaymentStatusApproved)
                     {
-                        //var options = new RefundCreateOptions
-                        //{
-                        //    Reason = RefundReasons.RequestedByCustomer,
-                        //    PaymentIntent = orderHeader.PaymentIntentId
-                        //};
+                        var options = new RefundCreateOptions
+                        {
+                            Reason = RefundReasons.RequestedByCustomer,
+                            PaymentIntent = orderHeader.PaymentIntentId
+                        };
 
-                        //var service = new RefundService();
-                        //Refund refund = service.Create(options);
+                        var service = new RefundService();
+                        Refund refund = service.Create(options);
 
-                        PaymentsStatus= SD.StatusRefunded;
+                        PaymentsStatus = SD.StatusRefunded;
+                        logger.LogInformation("Payment Refunded.");
                     }
                     else
                     {
@@ -228,9 +233,11 @@ namespace OnlineShop.Areas.Admin.Controllers
                     {
                         serviceResult.Success = true;
                         serviceResult.Data = "Order Cancelled Successfully.";
+                        logger.LogInformation("Order Cancelled Successfully.");
                     }
                     else
                     {
+                        logger.LogInformation("Some Error Occured. Error : "+apiHeaderUpdate.Message);
                         serviceResult.Success = false;
                         serviceResult.Message = "Some Error Occured.";
                     }
@@ -241,6 +248,7 @@ namespace OnlineShop.Areas.Admin.Controllers
                 serviceResult.Success = false;
                 serviceResult.Message = ex.Message;
                 TempData["Result"] = JsonConvert.SerializeObject(serviceResult);
+                logger.LogWarning(ex.Message,"CancelOrder()");
             }
             TempData["Result"] = JsonConvert.SerializeObject(serviceResult);
 

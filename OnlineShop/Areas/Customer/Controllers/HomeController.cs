@@ -17,9 +17,10 @@ namespace OnlineShop.Areas.Customer.Controllers
         private readonly Auth0 auth;
         private readonly IAuth0ClientHelper auth0ClientHelper;
         private readonly ApplicationDbContext _db;
+        private readonly ILogger _logger;
 
 
-        public HomeController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper, ApplicationDbContext db)
+        public HomeController(IHttpClientHelper httpClientHelper, Auth0 auth, IAuth0ClientHelper auth0ClientHelper, ApplicationDbContext db, ILogger<HomeController> logger)
         {
             this.httpClientHelper = httpClientHelper;
             this.auth = auth;
@@ -34,6 +35,7 @@ namespace OnlineShop.Areas.Customer.Controllers
             }
             httpClientHelper.auth = auth;
             _db = db;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -93,6 +95,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 exception.Success = false;
                 exception.Message = ex.Message;
                 TempData["Result"] = JsonConvert.SerializeObject(exception);
+                _logger.LogWarning(ex.Message);
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -130,6 +133,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 exception.Success = false;
                 exception.Message = ex.Message;
                 TempData["Result"] = JsonConvert.SerializeObject(exception);
+                _logger.LogWarning(ex.Message);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -169,6 +173,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 exception.Success = false;
                 exception.Message = ex.Message;
                 TempData["Result"] = JsonConvert.SerializeObject(exception);
+                _logger.LogWarning(ex.Message);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -202,6 +207,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 exception.Success = false;
                 exception.Message = ex.Message;
                 TempData["Result"] = JsonConvert.SerializeObject(exception);
+                _logger.LogWarning(ex.Message);
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -226,6 +232,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 }
                 else
                 {
+                    _logger.LogWarning("Error occured while sorting the products.",apiresult.Message);
                     TempData["Result"] = JsonConvert.SerializeObject(apiresult);
                 }
                 return View("Index", new List<Product>());
@@ -236,6 +243,7 @@ namespace OnlineShop.Areas.Customer.Controllers
                 exception.Success = false;
                 exception.Message = ex.Message;
                 TempData["Result"] = JsonConvert.SerializeObject(exception);
+                _logger.LogWarning(ex.Message);
                 return RedirectToAction(nameof(Index));
             }
         }
