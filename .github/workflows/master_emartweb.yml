@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'emartweb'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_225A9513DB4B4326998CA526F927A20A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_67D373867BB347D4B09FE51C20F59012 }}
           package: .
